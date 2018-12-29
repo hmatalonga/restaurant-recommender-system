@@ -1,22 +1,11 @@
 [[source]]
-verify_ssl = true
 name = "pypi"
 url = "https://pypi.org/simple"
+verify_ssl = true
 
 [dev-packages]
-jupyter = "*"
-pylint = "*"
-"autopep8" = "*"
+
+[packages]
 
 [requires]
 python_version = "3.5"
-
-[packages]
-pandas = "==0.23.*"
-nltk="*"
-numpy = "==1.15.*"
-matplotlib = "*"
-scikit-learn="*"
-scipy="*"
-seaborn = "*"
-stopwords = "*"

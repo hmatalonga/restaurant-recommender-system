@@ -1,0 +1,22 @@
+[[source]]
+verify_ssl = true
+name = "pypi"
+url = "https://pypi.org/simple"
+
+[dev-packages]
+jupyter = "*"
+pylint = "*"
+"autopep8" = "*"
+
+[requires]
+python_version = "3.5"
+
+[packages]
+pandas = "==0.23.*"
+nltk="*"
+numpy = "==1.15.*"
+matplotlib = "*"
+scikit-learn="*"
+scipy="*"
+seaborn = "*"
+stopwords = "*"
