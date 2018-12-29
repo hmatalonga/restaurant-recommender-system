@@ -1,79 +1,60 @@
 #!/usr/bin/env python3
 
+import sys
 import pandas as pd
 import numpy as np
-from ast import literal_eval
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from re import sub
 
 
-# Function to convert all strings to lower case and strip names of spaces
-def clean_data(x):
-    if isinstance(x, list):
-        return [str.lower(i.replace(" ", "")) for i in x]
-    else:
-        if isinstance(x, str):
-            return str.lower(x.replace(" ", ""))
+params = {'cuisine': 'any food', 'price': 'any price', 'city': 'anywhere'}
+
+
+def find_restaurant(df, cuisine=params['cuisine'], price=params['price'], city=params['city'], num=5):
+    condition = None
+    multiple = False
+
+    if (cuisine != params['cuisine']):
+        condition = df['Cuisine Style'].str.contains(
+            cuisine.lower(), regex=False)
+        multiple = True
+
+    if (price != params['price']):
+        if multiple:
+            condition = condition & (df['Price Range'] == price.lower())
         else:
-            return ''
+            condition = df['Price Range'] == price.lower()
+            multiple = True
+
+    if (city != params['city']):
+        if multiple:
+            condition = condition & (df['City'].str.lower() == city.lower())
+        else:
+            condition = df['City'].str.lower() == city.lower()
+
+    gl = df[condition].sort_values(
+        ['Ranking', 'Rating'], ascending=[True, False])
+
+    cols = ['Name', 'City', 'Ranking', 'Rating', 'Price Range']
+
+    return gl[cols].head(num)
 
 
-# Function that takes in movie title as input and outputs most similar movies
-def get_recommendations(title, indices, cosine_sim, num=10):
-    # Get the index of the movie that matches the title
-    idx = indices[title]
+def main():
+    try:
+        if len(sys.argv) < 2:
+            raise IOError('Dataset missing!')
 
-    # Get the pairwsie similarity scores of all movies with that movie
-    sim_scores = list(enumerate(cosine_sim[idx]))
+        df = pd.read_pickle(sys.argv[1])
 
-    # Sort the movies based on the similarity scores
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        city = input('Enter city: ') or params['city']
+        cuisine = input('Enter cuisine: ') or params['cuisine']
+        price = input('Enter price: ') or params['price']
 
-    # Get the scores of the 10 most similar movies
-    sim_scores = sim_scores[1:num+1]
-
-    # Get the restaurants indices
-    restaurants_indices = [i[0] for i in sim_scores]
-
-    # Return the top 10 most similar movies
-    return df['Name'].iloc[restaurants_indices]
+        print(find_restaurant(df, cuisine=cuisine,
+                              city=city, price=price).to_string())
+    except Exception as e:
+        print(e)
 
 
-print('Reading dataset...')
-df = pd.read_csv('../data/TA_restaurants_curated.csv', encoding='utf-8')
-df = df.iloc[:, 1:7].copy()
-df = df.sample(100000)
-
-print('Cleaning data...')
-df = df.dropna()
-df['Price Range'] = df['Price Range'].astype('category')
-
-for feature in ['City', 'Cuisine Style']:
-    df[feature] = df[feature].apply(clean_data)
-
-# Parse the stringified features into their corresponding python objects
-for feature in ['Cuisine Style']:
-    df[feature] = df[feature].apply(literal_eval)
-
-print('Preparing soup...')
-df['soup'] = df.apply(lambda x: ' '.join(
-    x['Cuisine Style']) + ' ' + x['City'], axis=1)
-
-print('Making count matrix...')
-# Import CountVectorizer and create the count matrix
-count = CountVectorizer(stop_words='english')
-count_matrix = count.fit_transform(df['soup'])
-
-print('Calculating cosine similarity...')
-cosine_sim = cosine_similarity(count_matrix, count_matrix)
-
-print('Resetting indexes...')
-df = df.reset_index()
-indices = pd.Series(df.index, index=df['Name'])
-
-print('Example input: ', indices[50])
-
-restaurant_name = input('Restaurant Name: ')
-recommendations = get_recommendations(restaurant_name, indices, cosine_sim)
-
-print(recommendations)
+if __name__ == '__main__':
+    main()
