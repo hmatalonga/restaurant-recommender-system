@@ -1,7 +1,7 @@
 <template>
   <form>I feel like eating
     <NLFormAutoComplete
-      id="food"
+      id="cuisine"
       :width="260"
       placeholder="any food"
       :items="food.items"
@@ -9,14 +9,14 @@
     />in a
     <NLFormAutoComplete
       id="price"
-      :width="220"
+      :width="260"
       placeholder="fancy"
       :items="price.items"
       v-model="price.text"
     />restaurant in
     <NLFormAutoComplete
-      id="location"
-      placeholder="New York"
+      id="city"
+      placeholder="London"
       :items="location.items"
       v-model="location.text"
     />.
@@ -45,7 +45,7 @@ export default {
         text: "",
         items: cities
       }
-    }
+    };
   }
 };
 </script>

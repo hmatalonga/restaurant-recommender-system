@@ -2,7 +2,7 @@
 	"private": true,
 	"scripts": {
 		"docker:build": "docker build -t hmatalonga/backend-app .",
-		"docker:run": "docker run -d -p 4000:80 --rm --name backend-app-1 hmatalonga/backend-app",
+		"docker:run": "docker run -d -p 9000:80 --rm --name backend-app-1 hmatalonga/backend-app",
 		"deploy": "yarn run docker:build && yarn run docker:run"
 	}
 }

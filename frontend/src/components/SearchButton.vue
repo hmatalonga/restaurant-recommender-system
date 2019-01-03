@@ -1,12 +1,9 @@
 <template>
-  <button class="default" :class="classes" type="button">Find me Restaurants</button>
+  <button class="default" type="button" @click="$emit('search')">Find me Restaurants</button>
 </template>
 
 <script>
-export default {
-  props: ["classes"],
-  mounted() {}
-};
+export default {};
 </script>
 
 

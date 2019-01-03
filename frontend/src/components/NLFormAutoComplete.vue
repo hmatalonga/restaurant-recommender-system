@@ -4,6 +4,7 @@
     <input
       :class="{ 'text-centered': centerText }"
       type="text"
+      :id="id"
       :name="id"
       v-model="query"
       @keydown.esc="query = ''"
