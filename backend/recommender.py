@@ -45,16 +45,16 @@ def keyword_search(df, sim_func, name, index_name='Name', num=5, as_json=True):
     df = df.reset_index()
     indices = pd.Series(df.index, index=df[index_name])
 
-    # Get the index of the movie that matches the title
+    # Get the index of the restaurant that matches the name
     idx = indices[name]
 
-    # Get the pairwsie similarity scores of all movies with that movie
+    # Get the pairwise similarity scores of all restaurants with that restaurant
     sim_scores = list(enumerate(sim_func[idx]))
 
-    # Sort the movies based on the similarity scores
+    # Sort the restaurant based on the similarity scores
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-    # Get the scores of the 10 most similar movies
+    # Get the scores of the num most similar restaurants
     sim_scores = sim_scores[1:num+1]
 
     # Get the restaurants indices

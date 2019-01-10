@@ -1,1 +1,3 @@
-# restaurant-recommender-system
+# Restaurant Recommender System
+
+> Academic Project
